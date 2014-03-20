@@ -161,9 +161,9 @@ var observeDOM = (function(){
     }
 })();
 
-var actionsContainerXPath = "/html/body[@id='dummybodyid']/div[@class='content']/div\
-   [@class='view']/div[@class='container']/div[@class='sections']/div[@class='main']/\
-   div[@class='additional']/div[@class='actions']";
+var actionsContainerXPath = "/html/body/div[@class='content']/div[@class='view']/div\
+    [@class='container']/div[@class='sections']/div[@class='main']/div[@class='additional']\
+    /div[@class='actions']";
 var buttonAdded = false;
 observeDOM(document.body, function(){ 
     var actionsContainer = getElementByXpath(actionsContainerXPath);
