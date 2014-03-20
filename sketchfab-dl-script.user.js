@@ -7,7 +7,7 @@
 // @version        1.0
 //
 // Urls process this user script on
-// @include        /^https?://(www\.)?sketchfab\.com/show/.*$/
+// @include        /^https?://(www\.)?sketchfab\.com/models/.*$/
 // ==/UserScript==
  
 function getElementByXpath(path) {
@@ -139,8 +139,43 @@ window.dlOBJ = function() {
     }
     downloadLink.click();
 };
-var ul = getElementByXpath('//*[@id="main-menu"]/ul');
-var li=document.createElement("li");
-li.innerHTML='<a class="order-model" id="downloadOBJ"><span>Download .OBJ</span></a>';
-li.addEventListener ("click", dlOBJ , false);
-ul.appendChild(li);
+// Credit: http://stackoverflow.com/questions/3219758/detect-changes-in-the-dom
+var observeDOM = (function(){
+    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver,
+        eventListenerSupported = window.addEventListener;
+
+    return function(obj, callback){
+        if( MutationObserver ){
+            // define a new observer
+            var obs = new MutationObserver(function(mutations, observer){
+                if( mutations[0].addedNodes.length || mutations[0].removedNodes.length )
+                    callback();
+            });
+            // have the observer observe foo for changes in children
+            obs.observe( obj, { childList:true, subtree:true });
+        }
+        else if( eventListenerSupported ){
+            obj.addEventListener('DOMNodeInserted', callback, false);
+            obj.addEventListener('DOMNodeRemoved', callback, false);
+        }
+    }
+})();
+
+var actionsContainerXPath = "/html/body[@id='dummybodyid']/div[@class='content']/div\
+   [@class='view']/div[@class='container']/div[@class='sections']/div[@class='main']/\
+   div[@class='additional']/div[@class='actions']";
+var buttonAdded = false;
+observeDOM(document.body, function(){ 
+    var actionsContainer = getElementByXpath(actionsContainerXPath);
+    if (actionsContainer && !buttonAdded) {
+        var li=document.createElement("li");
+        li.innerHTML='<a class="button btn-medium btn-secondary"id="downloadOBJ"><span>\
+                      Download .OBJ</span></a>';
+        li.firstChild.addEventListener ("click", dlOBJ , false);
+        actionsContainer.appendChild(li.firstChild);
+        buttonAdded = true;
+    }
+    else if (!actionsContainer && buttonAdded) {
+        buttonAdded = false;   
+    }
+});
