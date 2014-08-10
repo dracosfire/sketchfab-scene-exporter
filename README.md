@@ -1,19 +1,15 @@
 sketchfab-dl-script
 ===================
+The goal of this script is to allow you to export the models contained in a Sketchfab scene to a Blender-ready format without ever leaving the browser.  
 
-A userscript to export .obj files from Sketchfab.com  
-
-This script allows you to export a .OBJ file from a Sketchfab model viewer page.  
-
-Note:  
-  This new version of the script automatically initiates the model download, and also downloads separate .OBJ files for each model in the scene.   
-  
-  
 Usage:  
-  If successful, the script should automatically start downloading the models contained in the Sketchfab scene of the model viewer page you are on. If nothing seems to be happening, you should try refreshing the page multiple times. This appears to only work in Chrome at the moment. 
+  A download button will appear inside the scene viewer (as shown in the image below) when viewing a Sketchfab scene. This appears to only work in Chrome at this time.
   
 Installation:  
-  If you have a userscript manager  installed, clicking on [this link](https://github.com/reinitialized/sketchfab-dl-script/raw/master/sketchfab-dl-script.user.js) should bring up a prompt to install the script.  
+  If you have a userscript manager installed, clicking on [this link](https://github.com/reinitialized/sketchfab-dl-script/raw/master/sketchfab-dl-script.user.js) should bring up a prompt to install the script.  
+
+Preview:  
+  ![Example](https://raw.githubusercontent.com/reinitialized/sketchfab-dl-script/master/sketchfabToBlender.png)
 
 Todo:  
   Add UV support
