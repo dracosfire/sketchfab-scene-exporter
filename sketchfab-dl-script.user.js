@@ -41,6 +41,7 @@ function safeName(s) {
 function InfoForGeometry(geom) {
     var info = {
         'vertices' : geom.attributes.Vertex._elements,
+        'normals' : geom.attributes.Normal._elements,
         'texCoords' : geom.attributes.TexCoord0._elements,
         'primitives' : [],
         'name' : geom.name
@@ -61,14 +62,21 @@ function OBJforGeometry(geom) {
     var info = InfoForGeometry(geom);
     obj += 'mtllib ' + MTLFilenameForGeometry(geom) + nl;
     obj += 'o ' + geom.name + nl;
-    for (var i = 0; i < info.vertices.length; i += 3) {
+    for (i = 0; i < info.vertices.length; i += 3) {
         obj += 'v ';
         for (j = 0; j < 3; ++j) {
             obj += info.vertices[i + j] + ' ';
         }
         obj += nl;
     }
-    for (var i = 0; i < info.texCoords.length; i += 2) {
+    for (i = 0; i < info.normals.length; i += 3) {
+        obj += 'vn ';
+        for (j = 0; j < 3; ++j) {
+            obj += info.normals[i + j] + ' ';
+        }
+        obj += nl;
+    }
+    for (i = 0; i < info.texCoords.length; i += 2) {
      	obj += 'vt ';
         for (j = 0; j < 2; ++j) {
             obj += info.texCoords[i + j] + ' ';
@@ -77,7 +85,7 @@ function OBJforGeometry(geom) {
     }
     obj += 'usemtl ' + MTLNameForGeometry(geom) + nl;
     obj += 's on' + nl;
-    for (var i = 0; i < info.primitives.length; ++i) {
+    for (i = 0; i < info.primitives.length; ++i) {
         var primitive = info.primitives[i];
         if (primitive.mode == 4 || primitive.mode == 5) {
             for (j = 0; j + 2 < primitive.indices.length; primitive.mode == 4 ? j += 3 : ++j) {
@@ -87,7 +95,8 @@ function OBJforGeometry(geom) {
                 if (isOddFace) 
                     order = [ 0, 2, 1];
                 for (k = 0; k < 3; ++k) {
-                    obj += (primitive.indices[j + order[k]] + 1) + ' ';
+                    var faceNum = (primitive.indices[j + order[k]] + 1);
+                    obj += faceNum + '/' + faceNum + '/' + faceNum + ' ';
                 }
                 obj += nl;
             }
