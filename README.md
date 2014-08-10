@@ -17,7 +17,3 @@ Tested and working on Chrome + TamperMonkey, Firefox + Greasemonkey, and Opera +
 Preview
 ---------------------
 ![Example](https://raw.githubusercontent.com/reinitialized/sketchfab-dl-script/master/sketchfabToBlender.png)
-
-Todo
----------------------
-Add UV support
