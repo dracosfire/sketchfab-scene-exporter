@@ -248,16 +248,20 @@ function downloadString(filename, ext, str) {
     downloadLink.click();
 }
 
+var imagesDownloaded = {};
 // source: http://muaz-khan.blogspot.com/2012/10/save-files-on-disk-using-javascript-or.html
 function downloadFileAtURL(fileURL) {
-    var save = document.createElement('a');
-    save.href = fileURL;
-    save.target = '_blank';
-    save.download = '';
-    var event = document.createEvent('Event');
-    event.initEvent('click', true, true);
-    save.dispatchEvent(event);
-    (window.URL || window.webkitURL).revokeObjectURL(save.href);
+    if (!imagesDownloaded[fileURL]) {
+        imagesDownloaded[fileURL] = true;
+        var save = document.createElement('a');
+        save.href = fileURL;
+        save.target = '_blank';
+        save.download = '';
+        var event = document.createEvent('Event');
+        event.initEvent('click', true, true);
+        save.dispatchEvent(event);
+        (window.URL || window.webkitURL).revokeObjectURL(save.href);
+	}
 }
 
 function downloadModels() {
