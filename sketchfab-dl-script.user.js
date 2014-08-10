@@ -4,7 +4,7 @@
 // @author         Reinitialized
 //
 //Version Number
-// @version        1.02
+// @version        1.03
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -15,13 +15,14 @@ window.onload=function() {
 };
 
 var models = [];
+var baseModelName = safeName(document.title.replace(' - Sketchfab', ''));
 function overrideDrawImplementation() {
     OSG.osg.Geometry.prototype.originalDrawImplementation = OSG.osg.Geometry.prototype.drawImplementation;
     OSG.osg.Geometry.prototype.drawImplementation = function(a) {
         this.originalDrawImplementation(a);
         if (!this.computedOBJ) {
             this.computedOBJ = true;
-            this.name = safeName(document.title.replace(' - Sketchfab', '')) + '-' + models.length;
+            this.name = baseModelName + '-' + models.length;
             this.textures = textureInfoForGeometry(this);
             models.push({
                 name: this.name,
@@ -56,6 +57,7 @@ function InfoForGeometry(geom) {
     return info;
 }
 
+var verticesExported = 0;
 var nl = '\n';
 function OBJforGeometry(geom) {
     var obj = '';
@@ -96,7 +98,7 @@ function OBJforGeometry(geom) {
                 if (isTriangleStrip && isOddFace) 
                     order = [ 0, 2, 1];
                 for (k = 0; k < 3; ++k) {
-                    var faceNum = (primitive.indices[j + order[k]] + 1);
+                    var faceNum = primitive.indices[j + order[k]] + 1 + verticesExported;
                     obj += faceNum + '/' + faceNum + '/' + faceNum + ' ';
                 }
                 obj += nl;
@@ -106,6 +108,7 @@ function OBJforGeometry(geom) {
             throw 'Primitive mode not implemented';
         }
     }
+    verticesExported += info.vertices.length / 3.0;
     return obj;
 }
 
@@ -160,7 +163,7 @@ function textureFilename(geom, texture) {
 }
 
 function MTLFilenameForGeometry(geom) {
- 	return MTLNameForGeometry(geom) + '.mtl';   
+ 	return baseModelName + '.mtl';   
 }
 
 function MTLNameForGeometry(geom) {
@@ -262,13 +265,17 @@ function downloadModels() {
     	alert("Download script failed... try refreshing the page");
         return;
     }
+    var combinedOBJ = '';
+    var combinedMTL = '';
     models.forEach(function(model) {
-        downloadString(model.name, 'obj', model.obj);
-        downloadString(model.name, 'mtl', model.mtl);
+        combinedOBJ += model.obj + nl;
+        combinedMTL += model.mtl + nl;
         model.textures.forEach(function(texture) {
         	downloadFileAtURL(texture.url);
         });
     });
+    downloadString(baseModelName, 'obj', combinedOBJ);
+    downloadString(baseModelName, 'mtl', combinedMTL);
 }
 
 function addDownloadButton(downloadButtonParent) {
