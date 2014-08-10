@@ -88,11 +88,12 @@ function OBJforGeometry(geom) {
     for (i = 0; i < info.primitives.length; ++i) {
         var primitive = info.primitives[i];
         if (primitive.mode == 4 || primitive.mode == 5) {
-            for (j = 0; j + 2 < primitive.indices.length; primitive.mode == 4 ? j += 3 : ++j) {
+            var isTriangleStrip = primitive.mode == 5;
+            for (j = 0; j + 2 < primitive.indices.length; !isTriangleStrip ? j += 3 : ++j) {
                 obj += 'f ';
                 var isOddFace = (j % 2) % 2 == 1;
                 var order = [ 0, 1, 2];
-                if (isOddFace) 
+                if (isTriangleStrip && isOddFace) 
                     order = [ 0, 2, 1];
                 for (k = 0; k < 3; ++k) {
                     var faceNum = (primitive.indices[j + order[k]] + 1);
