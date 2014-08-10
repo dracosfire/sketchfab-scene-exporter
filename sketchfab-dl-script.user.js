@@ -68,8 +68,12 @@ function OBJforGeometryInfo(info) {
         if (primitive.mode == 4 || primitive.mode == 5) {
             for (j = 0; j + 2 < primitive.indices.length; primitive.mode == 4 ? j += 3 : ++j) {
                 obj += 'f ';
+                var isOddFace = (j % 2) % 2 == 1;
+                var order = [ 0, 1, 2];
+                if (isOddFace) 
+                    order = [ 0, 2, 1];
                 for (k = 0; k < 3; ++k) {
-                    obj += (primitive.indices[j + k] + 1) + ' ';
+                    obj += (primitive.indices[j + order[k]] + 1) + ' ';
                 }
                 obj += '\n';
             }
