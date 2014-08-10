@@ -10,10 +10,8 @@ Note:
   
   
 Usage:  
-  While a model is loading on the model viewer page, a javascript alert is displayed by the script, and once the alert is dismissed, the .OBJ files are downloaded. If you do not see the alert after the model is loaded, you should try refreshing the page multiple times. This appears to only work in Chrome at the moment. The following is an image of the alert: 
+  If successful, the script should automatically start downloading the models contained in the Sketchfab scene of the model viewer page you are on. If nothing seems to be happening, you should try refreshing the page multiple times. This appears to only work in Chrome at the moment. 
   
-![](http://reinitialized.com/sketchfab-script-example.png) 
-
 Installation:  
   If you have a userscript manager  installed, clicking on [this link](https://github.com/reinitialized/sketchfab-dl-script/raw/master/sketchfab-dl-script.user.js) should bring up a prompt to install the script.  
 
