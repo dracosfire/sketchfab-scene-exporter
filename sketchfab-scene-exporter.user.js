@@ -4,7 +4,7 @@
 // @author         Reinitialized
 //
 //Version Number
-// @version        1.03
+// @version        1.04
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -40,10 +40,18 @@ function safeName(s) {
 }
  
 function InfoForGeometry(geom) {
+    var attributes = geom.attributes;
+    if (!attributes)
+        throw "No attributes for geometry";
+    var vertices = attributes.Vertex;
+    if (!vertices)
+        throw "No vertices for geometry";
+    var normals = attributes.Normal;
+    var texCoords = attributes.TexCoord0;
     var info = {
-        'vertices' : geom.attributes.Vertex._elements,
-        'normals' : geom.attributes.Normal._elements,
-        'texCoords' : geom.attributes.TexCoord0._elements,
+        'vertices' : vertices._elements,
+        'normals' : normals ? normals._elements : [],
+        'texCoords' : texCoords ? texCoords._elements : [],
         'primitives' : [],
         'name' : geom.name
     };
@@ -87,6 +95,10 @@ function OBJforGeometry(geom) {
     }
     obj += 'usemtl ' + MTLNameForGeometry(geom) + nl;
     obj += 's on' + nl;
+    var exist = {
+        normals: info.normals.length != 0,
+        texCoords: info.texCoords.length != 0,
+    };
     for (i = 0; i < info.primitives.length; ++i) {
         var primitive = info.primitives[i];
         if (primitive.mode == 4 || primitive.mode == 5) {
@@ -99,7 +111,19 @@ function OBJforGeometry(geom) {
                     order = [ 0, 2, 1];
                 for (k = 0; k < 3; ++k) {
                     var faceNum = primitive.indices[j + order[k]] + 1 + verticesExported;
-                    obj += faceNum + '/' + faceNum + '/' + faceNum + ' ';
+                    obj += faceNum;
+                    if (exist.normals && !exist.texCoords) {
+                         obj += '//' + faceNum;
+                    }
+                    else {
+                        if (exist.texCoords) {
+                            obj += '/' + faceNum;
+                        }
+                        if (exist.normals) {
+                            obj += '/' + faceNum;
+                        }
+                    }
+                    obj += ' ';
                 }
                 obj += nl;
             }
