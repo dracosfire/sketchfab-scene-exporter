@@ -8,7 +8,7 @@ A download button will appear inside the scene viewer (as shown in the image bel
   
 Installation
 ---------------------
-If you have a userscript manager installed, clicking on [this link](https://github.com/reinitialized/sketchfab-dl-script/raw/master/sketchfab-dl-script.user.js) should bring up a prompt to install the script. 
+If you have a userscript manager installed, clicking on [this link](https://github.com/reinitialized/sketchfab-scene-exporter/raw/master/sketchfab-scene-exporter.user.js) should bring up a prompt to install the script. 
 
 Compatibility
 ---------------------
