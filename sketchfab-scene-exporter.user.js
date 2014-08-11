@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name           Sketchfab download script
-// @description    lets you download Sketchfab models
+// @name           sketchfab-scene-exporter
+// @description    lets you export Sketchfab scenes
 // @author         Reinitialized
 //
 //Version Number
