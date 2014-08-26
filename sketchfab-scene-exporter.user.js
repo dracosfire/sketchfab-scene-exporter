@@ -10,14 +10,11 @@
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
 // ==/UserScript==
 
-window.onload=function() {
-    overrideDrawImplementation();
-};
-
 var models = [];
 var baseModelName = safeName(document.title.replace(' - Sketchfab', ''));
 function overrideDrawImplementation() {
     OSG.osg.Geometry.prototype.originalDrawImplementation = OSG.osg.Geometry.prototype.drawImplementation;
+    delete OSG.osg.Geometry.prototype.drawImplementation;
     OSG.osg.Geometry.prototype.drawImplementation = function(a) {
         this.originalDrawImplementation(a);
         if (!this.computedOBJ) {
@@ -105,7 +102,7 @@ function OBJforGeometry(geom) {
             var isTriangleStrip = primitive.mode == 5;
             for (j = 0; j + 2 < primitive.indices.length; !isTriangleStrip ? j += 3 : ++j) {
                 obj += 'f ';
-                var isOddFace = (j % 2) % 2 == 1;
+                var isOddFace = j % 2 == 1;
                 var order = [ 0, 1, 2];
                 if (isTriangleStrip && isOddFace) 
                     order = [ 0, 2, 1];
@@ -233,12 +230,22 @@ function getElementByXpath(path) {
 
 var addedDownloadButton = false;
 var downloadButtonParentXPath = "//div[@class='controls']";
+var osgScriptElementPath = "//script[contains (@src, 'OSG')]";
+var foundOsgScript = false;
 
 observeDOM(document.body, function(){ 
-    var downloadButtonParent = getElementByXpath(downloadButtonParentXPath);
-    if (downloadButtonParent && !addedDownloadButton) {
-        addDownloadButton(downloadButtonParent);
-        addedDownloadButton = true;
+    if (!foundOsgScript) {
+    	if (osgScript = getElementByXpath(osgScriptElementPath)) { 
+           osgScript.onload = overrideDrawImplementation;
+           foundOsgScript = true;
+    	}
+    }
+    if (!addedDownloadButton) {
+        if (downloadButtonParent = getElementByXpath(downloadButtonParentXPath))
+        {
+           addDownloadButton(downloadButtonParent);
+	   addedDownloadButton = true;
+        }
     }
 });
 
