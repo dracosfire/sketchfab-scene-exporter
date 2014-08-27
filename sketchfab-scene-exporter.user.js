@@ -23,8 +23,13 @@ function overrideDrawImplementation() {
             this.textures = textureInfoForGeometry(this);
             models.push({
                 name: this.name,
-                obj: OBJforGeometry(this),
-                mtl: MTLforGeometry(this),
+                geom: this,
+                get obj() {
+                    return OBJforGeometry(this.geom);
+                },
+                get mtl() {
+                    return MTLforGeometry(this.geom);
+                },
                 textures: this.textures
             });
         }
